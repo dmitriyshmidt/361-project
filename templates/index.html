@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Book App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <header>
+            <h1>Welcome to myRecipeBook!</h1>
+            <p>Your personal collection of delicious recipes in one place!</p>
+        </header>
+
+        <!-- Sign-In Section -->
+        <form class="sign-in">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+
+            <div class="sign-in-buttons">
+                <button id="signInButton" type="submit">Sign In</button>
+                <button id="guestButton" type="button">Sign In as Guest</button>
+            </div>
+
+            <!-- Register Link -->
+            <p>Don't have an account? <a href="/register">Register here</a>.</p>
+        </form>
+
+        <!-- Help Button -->
+        <button id="helpButton">Help</button>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close Help Modal">&times;</button>
+            <h2>How to Navigate myRecipeBook</h2>
+            <p>
+                Sign in to save and track your favorite recipes. As a guest, you can browse and view recipes, but your preferences will not be saved.
+                Enjoy exploring all of the recipes!
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

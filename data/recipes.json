@@ -1,0 +1,106 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+    "username": "user1",
+    "title": "Spaghetti Carbonara",
+    "description": "A classic Italian pasta dish made with eggs, cheese, pancetta, and pepper.",
+    "ingredients": [
+      {
+        "name": "Spaghetti",
+        "amount": "200",
+        "measurement": "grams"
+      },
+      {
+        "name": "Pancetta",
+        "amount": "100",
+        "measurement": "grams"
+      },
+      {
+        "name": "Eggs",
+        "amount": "2",
+        "measurement": "pieces"
+      },
+      {
+        "name": "Parmesan Cheese",
+        "amount": "50",
+        "measurement": "grams"
+      },
+      {
+        "name": "Black Pepper",
+        "amount": "1",
+        "measurement": "teaspoon"
+      }
+    ],
+    "instructions": [
+      "Boil pasta according to package instructions.",
+      "Cook pancetta until crispy.",
+      "Beat eggs and mix with grated Parmesan cheese.",
+      "Combine pasta with pancetta and remove from heat.",
+      "Quickly stir in egg and cheese mixture.",
+      "Season with black pepper and serve immediately."
+    ]
+  },
+  {
+    "id": "0f1e2d3c-4b5a-6789-0123-456789abcdef",
+    "username": "user2",
+    "title": "Chicken Tikka Masala",
+    "description": "A flavorful dish made with marinated chicken in a spiced curry sauce.",
+    "ingredients": [
+      {
+        "name": "Chicken Breast",
+        "amount": "500",
+        "measurement": "grams"
+      },
+      {
+        "name": "Yogurt",
+        "amount": "200",
+        "measurement": "grams"
+      },
+      {
+        "name": "Tomato Puree",
+        "amount": "400",
+        "measurement": "grams"
+      },
+      {
+        "name": "Garlic",
+        "amount": "4",
+        "measurement": "cloves"
+      },
+      {
+        "name": "Garam Masala",
+        "amount": "2",
+        "measurement": "tablespoons"
+      }
+    ],
+    "instructions": [
+      "Marinate chicken in yogurt and spices for at least 2 hours.",
+      "Grill or broil the chicken until cooked through.",
+      "Prepare sauce by saut\u00e9ing garlic and spices, then adding tomato puree.",
+      "Simmer sauce and add grilled chicken pieces.",
+      "Cook for an additional 15 minutes.",
+      "Serve hot with rice or naan bread."
+    ]
+  },
+  {
+    "title": "Cereal",
+    "description": "A bowl of cereal",
+    "ingredients": [
+      {
+        "name": "milk",
+        "amount": "1",
+        "measurement": "cups"
+      },
+      {
+        "name": "cereal",
+        "amount": "75",
+        "measurement": "grams"
+      }
+    ],
+    "instructions": [
+      "add cereal to a bowl",
+      "add milk to cereal"
+    ],
+    "username": "user2",
+    "id": "ca382d6d-9826-4a13-80a1-a6c61c29b957"
+  }
+]

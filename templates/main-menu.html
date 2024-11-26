@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Book App - Main Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <div class="menu-container">
+        <!-- Main Menu Section -->
+        <header>
+            <h1>Main Menu</h1>
+            <p>Select an option below to get started with your recipes!</p>
+        </header>
+
+        <!-- Menu Buttons -->
+        <div class="menu-buttons">
+            <button id="viewRecipesButton">View Recipes</button>
+            <button id="addRecipeButton">Add a Recipe</button>
+            <button id="getRecommendationsButton">Get Recommendations</button>
+        </div>
+
+        <!-- Logout Button -->
+        <button id="logoutButton" class="logout-button">Logout</button>
+    </div>
+
+    <!-- Help Button -->
+    <button id="helpButton" class="help-button">Help</button>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close Help Modal">&times;</button>
+            <h2>How to Use the Main Menu</h2>
+            <p>
+                - <strong>View Recipes:</strong> Browse through all your saved recipes.<br>
+                - <strong>Add a Recipe:</strong> Add a new recipe to your collection.<br>
+                - <strong>Get Recommendations:</strong> Get recipe recommendations based on your saved recipes.<br>
+                - <strong>Logout:</strong> Sign out of your account.
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

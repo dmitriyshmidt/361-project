@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Recipe - Recipe Book App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <!-- Help Button -->
+    <button id="helpButton" class="help-button">Help</button>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close Help Modal">&times;</button>
+            <h2>How to Add a Recipe</h2>
+            <p>
+                - Enter the recipe title and a brief description.<br>
+                - Add ingredients by filling in the name, amount, and measurement, then click the "+" button.<br>
+                - Add instructions by describing each step, then click the "+" button.<br>
+                - Click "Save Recipe" to save your recipe.<br>
+                - Use "Cancel" to discard changes.<br>
+                - Use "Back" to return to the previous page.<br>
+                - Use "Logout" to sign out of your account.
+            </p>
+        </div>
+    </div>
+
+    <div class="add-recipe-container">
+        <!-- Header -->
+        <header>
+            <h1>Add a New Recipe</h1>
+        </header>
+
+        <!-- Form to Add Recipe -->
+        <form id="addRecipeForm">
+            <!-- Recipe Title and Description -->
+            <div class="recipe-title">
+                <label for="recipeTitle">Recipe Title:</label>
+                <input type="text" id="recipeTitle" name="recipeTitle" placeholder="Enter the recipe title">
+            </div>
+            <div class="recipe-description">
+                <label for="recipeDescription">Description:</label>
+                <textarea id="recipeDescription" name="recipeDescription" placeholder="Enter a brief description"></textarea>
+            </div>
+
+            <!-- Ingredients Section -->
+            <div class="ingredients-section">
+                <h2>Ingredients</h2>
+                <div id="ingredientsList">
+                    <div class="ingredient-item">
+                        <input type="text" class="ingredient-name" name="ingredientName" placeholder="Ingredient name">
+                        <input type="number" class="ingredient-amount" name="ingredientAmount" placeholder="Amount">
+                        <select class="ingredient-measurement" name="ingredientMeasurement">
+                            <option value="grams">grams</option>
+                            <option value="cups">cups</option>
+                            <option value="tablespoons">tablespoons</option>
+                            <option value="teaspoons">teaspoons</option>
+                            <option value="pieces">pieces</option>
+                        </select>
+                        <button type="button" class="remove-ingredient-button">Remove</button>
+                    </div>
+                </div>
+                <button type="button" id="addIngredientButton" class="add-button">+</button>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions-section">
+                <h2>Instructions</h2>
+                <div id="instructionsList">
+                    <div class="instruction-step">
+                        <label for="instructionText1">Step 1:</label>
+                        <textarea class="instruction-text" name="instructionText" id="instructionText1" placeholder="Describe this step"></textarea>
+                        <button type="button" class="remove-instruction-button">Remove</button>
+                    </div>
+                </div>
+                <button type="button" id="addInstructionButton" class="add-button">+</button>
+            </div>
+
+            <!-- Submit and Cancel Buttons -->
+            <button id="submitRecipeButton" type="submit">Save Recipe</button>
+            <button id="cancelButton" type="button" class="cancel-button">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Back Button -->
+    <button id="backButton" class="back-button">Back</button>
+
+    <!-- Logout Button -->
+    <button id="logoutButton" class="logout-button">Logout</button>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
