@@ -9,10 +9,7 @@
 <body>
     <!-- Notification Area -->
     <div id="notification" class="notification" style="display: none;"></div>
-
-    <!-- Help Button -->
-    <button id="helpButton" class="help-button">Help</button>
-
+    
     <!-- Help Modal -->
     <div id="helpModal" class="modal">
         <div class="modal-content">
@@ -85,14 +82,15 @@
                 </div>
                 <button type="button" id="addInstructionButton" class="add-button">+</button>
             </div>
-        </form>
-    </div>
 
-    <!-- Footer Buttons -->
-    <div class="footer-buttons">
-        <button id="submitRecipeButton" type="submit">Save Recipe</button>
-        <button id="backButton" class="back-button">Back</button>
-        <button id="logoutButton" class="logout-button">Logout</button>
+            <div class="footer-buttons">
+                <button id="helpButton" class="footer-button help-button">Help</button>
+                <button class="footer-button save-button" id="submitRecipeButton" type="submit">Save Recipe</button>
+                <button class="footer-button back-button" id="backButton" type="button">Back</button>
+                <button class="footer-button logout-button" id="logoutButton" type="button">Logout</button>
+            </div>
+            
+        </form>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

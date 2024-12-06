@@ -78,14 +78,30 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Guest sign-in
-    const guestButton = document.getElementById("guestButton");
-    if (guestButton) {
-        guestButton.addEventListener("click", function() {
-            sessionStorage.setItem("userStatus", "guest");
-            showNotification("You are now browsing as a guest!", 'info');
-            window.location.href = '/main-menu';
+// Guest sign-in
+const guestButton = document.getElementById("guestButton");
+if (guestButton) {
+    guestButton.addEventListener("click", function() {
+        fetch('/guest-login', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                sessionStorage.setItem("userStatus", "guest");
+                showNotification(data.message || "You are now browsing as a guest!", 'info');
+                window.location.href = data.redirect_url; // Redirect to main menu
+            } else {
+                showNotification(data.message || "An error occurred during guest login.", 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification("An error occurred during guest login.", 'error');
         });
-    }
+    });
+}
+
 
     // Logout button functionality
     const logoutButton = document.getElementById("logoutButton");

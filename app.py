@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 import os
 import json
 import uuid
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a secure random key in production
@@ -22,24 +23,31 @@ if not os.path.exists(RECIPES_FILE):
 # Initialize users.json if it doesn't exist
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, 'w') as f:
-        json.dump([], f, indent=2)
+        json.dump([{"username": "guest", "password": ""}], f, indent=2)
 
 # Helper functions to read and write data
-def read_recipes():
-    with open(RECIPES_FILE, 'r') as f:
-        return json.load(f)
+def read_json(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
-def write_recipes(recipes):
-    with open(RECIPES_FILE, 'w') as f:
-        json.dump(recipes, f, indent=2)
+def write_json(file_path, data):
+    try:
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=2)
+    except IOError as e:
+        app.logger.error(f"Error writing to {file_path}: {e}")
 
-def read_users():
-    with open(USERS_FILE, 'r') as f:
-        return json.load(f)
-
-def write_users(users):
-    with open(USERS_FILE, 'w') as f:
-        json.dump(users, f, indent=2)
+# Decorator for login-required routes
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/')
 def index():
@@ -51,7 +59,7 @@ def login():
     username = data.get('username').strip()
     password = data.get('password').strip()
 
-    users = read_users()
+    users = read_json(USERS_FILE)
 
     for user in users:
         if user['username'] == username and user['password'] == password:
@@ -60,94 +68,72 @@ def login():
 
     return jsonify({'success': False, 'message': 'Invalid username or password'}), 401
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        data = request.get_json()
-        username = data.get('username').strip()
-        password = data.get('password').strip()
-
-        users = read_users()
-
-        if any(user['username'] == username for user in users):
-            return jsonify({'success': False, 'message': 'Username already exists'}), 400
-
-        users.append({'username': username, 'password': password})
-        write_users(users)
-
-        return jsonify({'success': True, 'message': 'User registered successfully'})
-    else:
-        return render_template('register.html')
-
 @app.route('/main-menu')
+@login_required
 def main_menu():
-    if 'username' not in session:
-        return redirect(url_for('index'))
     return render_template('main-menu.html')
 
 @app.route('/add-recipe')
+@login_required
 def add_recipe():
-    if 'username' not in session:
-        return redirect(url_for('index'))
     return render_template('add-recipe.html')
 
 @app.route('/view-recipes')
+@login_required
 def view_recipes():
-    if 'username' not in session:
-        return redirect(url_for('index'))
-
-    recipes = read_recipes()
+    recipes = read_json(RECIPES_FILE)
     user_recipes = [recipe for recipe in recipes if recipe.get('username') == session['username']]
     return render_template('view-recipes.html', recipes=user_recipes)
 
 @app.route('/view-edit-recipe/<recipe_id>', methods=['GET', 'POST'])
+@login_required
 def view_edit_recipe(recipe_id):
-    if 'username' not in session:
-        return redirect(url_for('index'))
-
-    recipes = read_recipes()
+    recipes = read_json(RECIPES_FILE)
     recipe = next((r for r in recipes if r['id'] == recipe_id and r['username'] == session['username']), None)
 
     if not recipe:
-        return "Recipe not found or unauthorized", 404
+        return jsonify({'success': False, 'message': 'Recipe not found or unauthorized'}), 404
 
     if request.method == 'POST':
         data = request.get_json()
+        if not data.get('title'):
+            return jsonify({'success': False, 'message': 'Title is required'}), 400
+
         recipe['title'] = data.get('title', recipe['title'])
         recipe['description'] = data.get('description', recipe['description'])
         recipe['ingredients'] = data.get('ingredients', recipe['ingredients'])
         recipe['instructions'] = data.get('instructions', recipe['instructions'])
 
-        write_recipes(recipes)
-        return jsonify({'success': True, 'message': 'Recipe updated'})
+        write_json(RECIPES_FILE, recipes)
+        return jsonify({'success': True, 'message': 'Recipe updated', 'recipe': recipe})
 
     return render_template('view-edit-recipe.html', recipe=recipe)
 
 @app.route('/api/recipes', methods=['POST'])
+@login_required
 def save_recipe():
-    if 'username' not in session:
-        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
-
     recipe = request.get_json()
+
+    if not recipe.get('title'):
+        return jsonify({'success': False, 'message': 'Title is required'}), 400
+
     recipe['username'] = session['username']
     recipe['id'] = str(uuid.uuid4())
 
-    recipes = read_recipes()
+    recipes = read_json(RECIPES_FILE)
     recipes.append(recipe)
-    write_recipes(recipes)
-    return jsonify({'success': True, 'message': 'Recipe saved'})
+    write_json(RECIPES_FILE, recipes)
+    return jsonify({'success': True, 'message': 'Recipe saved', 'recipe': recipe})
 
 @app.route('/api/recipes/<recipe_id>', methods=['DELETE'])
+@login_required
 def delete_recipe(recipe_id):
-    if 'username' not in session:
-        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
-
-    recipes = read_recipes()
+    recipes = read_json(RECIPES_FILE)
     recipe_to_delete = next((r for r in recipes if r['id'] == recipe_id and r['username'] == session['username']), None)
 
     if recipe_to_delete:
         recipes.remove(recipe_to_delete)
-        write_recipes(recipes)
+        write_json(RECIPES_FILE, recipes)
         return jsonify({'success': True, 'message': 'Recipe deleted'})
     else:
         return jsonify({'success': False, 'message': 'Recipe not found or unauthorized'}), 404
@@ -156,6 +142,11 @@ def delete_recipe(recipe_id):
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
+@app.route('/guest-login', methods=['POST'])
+def guest_login():
+    session['username'] = "guest"
+    return jsonify({'success': True, 'message': 'Logged in as guest', 'redirect_url': url_for('main_menu')})
 
 if __name__ == '__main__':
     app.run(debug=True)

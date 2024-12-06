@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View/Edit Recipe - Recipe Book App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close Help Modal">&times;</button>
+            <h2>How to View/Edit a Recipe</h2>
+            <p>
+                - View or edit the recipe title, description, and the number of servings in the "Feeds" field.<br>
+                - Update ingredients by modifying the name, amount, and measurement, or remove ingredients if needed.<br>
+                - Update instructions by modifying existing steps or adding new steps.<br>
+                - Click "Save Recipe" to save your changes.<br>
+                - Use "Back" to return to the previous page without saving.<br>
+                - Use "Logout" to sign out of your account.
+            </p>
+        </div>
+    </div>
+
+    <div class="view-edit-recipe-container">
+        <!-- Header -->
+        <header>
+            <h1>View/Edit Recipe</h1>
+        </header>
+
+        <!-- Form to View/Edit Recipe -->
+        <form id="viewEditRecipeForm">
+            <!-- Recipe Title and Description -->
+            <div class="recipe-title">
+                <label for="recipeTitle">Recipe Title:</label>
+                <input type="text" id="recipeTitle" name="recipeTitle" value="{{ recipe.title }}" placeholder="Enter the recipe title">
+            </div>
+            <div class="recipe-description">
+                <label for="recipeDescription">Description:</label>
+                <textarea id="recipeDescription" name="recipeDescription" placeholder="Enter a brief description">{{ recipe.description }}</textarea>
+            </div>
+
+            <!-- Feeds Section -->
+            <div class="recipe-feeds">
+                <label for="recipeFeeds">Feeds:</label>
+                <input type="number" id="recipeFeeds" name="recipeFeeds" value="{{ recipe.feeds }}" placeholder="Enter the number of servings">
+            </div>
+
+            <!-- Ingredients Section -->
+            <div class="ingredients-section">
+                <h2>Ingredients</h2>
+                <div id="ingredientsList">
+                    {% for ingredient in recipe.ingredients %}
+                    <div class="ingredient-item">
+                        <input type="text" class="ingredient-name" name="ingredientName" value="{{ ingredient.name }}" placeholder="Ingredient name">
+                        <input type="number" class="ingredient-amount" name="ingredientAmount" value="{{ ingredient.amount }}" placeholder="Amount">
+                        <select class="ingredient-measurement" name="ingredientMeasurement">
+                            <option value="grams" {% if ingredient.measurement == "grams" %}selected{% endif %}>grams</option>
+                            <option value="cups" {% if ingredient.measurement == "cups" %}selected{% endif %}>cups</option>
+                            <option value="tablespoons" {% if ingredient.measurement == "tablespoons" %}selected{% endif %}>tablespoons</option>
+                            <option value="teaspoons" {% if ingredient.measurement == "teaspoons" %}selected{% endif %}>teaspoons</option>
+                            <option value="pieces" {% if ingredient.measurement == "pieces" %}selected{% endif %}>pieces</option>
+                        </select>
+                        <button type="button" class="remove-ingredient-button">Remove</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="addIngredientButton" class="add-button">+</button>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="instructions-section">
+                <h2>Instructions</h2>
+                <div id="instructionsList">
+                    {% for step in recipe.instructions %}
+                    <div class="instruction-step">
+                        <label for="instructionText{{ loop.index }}">Step {{ loop.index }}:</label>
+                        <textarea class="instruction-text" name="instructionText" id="instructionText{{ loop.index }}" placeholder="Describe this step">{{ step }}</textarea>
+                        <button type="button" class="remove-instruction-button">Remove</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="addInstructionButton" class="add-button">+</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer-buttons">
+        <button id="helpButton" class="footer-button help-button">Help</button>
+        <button class="footer-button save-button" id="submitRecipeButton" type="submit">Save Recipe</button>
+        <button class="footer-button back-button" id="backButton" type="button">Back</button>
+        <button class="footer-button logout-button" id="logoutButton" type="button">Logout</button>
+    </div>
+    
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

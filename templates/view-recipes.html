@@ -30,7 +30,6 @@
                 </div>
                 <div class="recipe-actions">
                     <button class="view-edit-button" data-id="{{ recipe.id }}">View/Edit</button>
-                        View/Edit
                     </button>
                     <button class="remove-button" data-id="{{ recipe.id }}">Remove</button>
                 </div>
@@ -40,8 +39,13 @@
         </div>
     </div>
 
-    <!-- Help Button -->
-    <button id="helpButton" class="help-button">Help</button>
+
+    <div class="footer-buttons">
+        <button id="helpButton" class="footer-button help-button">Help</button>
+        <button class="footer-button back-button" id="backButton" type="button">Back</button>
+        <button class="footer-button logout-button" id="logoutButton" type="button">Logout</button>
+    </div>
+    
 
     <!-- Help Modal -->
     <div id="helpModal" class="modal">
@@ -56,12 +60,6 @@
             </p>
         </div>
     </div>
-
-    <!-- Back Button -->
-    <button id="backButton" class="back-button" onclick="window.location.href='/main-menu';">Back</button>
-
-    <!-- Logout Button -->
-    <button id="logoutButton" class="logout-button">Logout</button>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

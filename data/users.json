@@ -1,5 +1,9 @@
 [
     {
+    "username": "guest",
+    "password": ""
+    },
+    {
       "username": "user1",
       "password": "password123"
     },
