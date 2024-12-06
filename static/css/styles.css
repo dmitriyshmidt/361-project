@@ -108,18 +108,28 @@ button:hover {
     background-color: #57B857; /* Slightly darker green on hover */
 }
 
-
-/* General Field and Form Element Spacing */
-input, textarea, select {
+/* Uniform input styles across the application */
+input[type="number"],
+input[type="text"],
+textarea {
     width: 100%;
-    max-width: 100%; /* Prevents overflow */
+    max-width: 100%; /* Prevent overflow */
     padding: 10px;
-    margin: 10px 0 15px; /* Consistent vertical spacing */
+    margin: 10px 0 15px; /* Add spacing around inputs */
     font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+    border: 1px solid #ccc; /* Consistent border */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
 }
+
+/* Ensure proper spacing for the multiplier section */
+.multiplier-section {
+    margin-top: 20px; /* Add spacing from above content */
+    margin-bottom: 100px; /* Leave space for footer buttons */
+    text-align: left; /* Align text within the section */
+    padding: 0 20px; /* Add padding to prevent edge-to-edge appearance */
+}
+
 
 /* Recipe List Styling */
 .recipe-item {

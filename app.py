@@ -260,6 +260,41 @@ def register_user():
     except Exception as e:
         return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'}), 500
 
+@app.route('/api/adjust-servings', methods=['POST'])
+@login_required
+def adjust_servings():
+    data = request.get_json()
+
+    request_file = os.path.join(app.root_path, 'microserviceD', 'multiplier_request.txt')
+    response_file = os.path.join(app.root_path, 'microserviceD', 'multiplier_response.txt')
+
+    try:
+        with open(request_file, 'w') as file:
+            file.write(f"MULTIPLY {json.dumps(data)}")
+
+        # Poll for the response
+        timeout = 10  # seconds
+        start_time = time.time()
+
+        while True:
+            if time.time() - start_time > timeout:
+                return jsonify({'success': False, 'message': 'Multiplier service timed out.'}), 504
+
+            if os.path.exists(response_file):
+                with open(response_file, 'r') as file:
+                    response = file.read().strip()
+
+                # Clear the response file after reading
+                with open(response_file, 'w') as file:
+                    file.write("")
+
+                if response.startswith("SUCCESS"):
+                    ingredients = json.loads(response[len("SUCCESS "):])
+                    return jsonify({'success': True, 'ingredients': ingredients})
+                else:
+                    return jsonify({'success': False, 'message': response.replace("ERROR ", "")})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

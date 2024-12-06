@@ -337,4 +337,67 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // Handle Adjust Servings
+    const adjustServingsButton = document.getElementById("adjustServingsButton");
+
+    if (adjustServingsButton) {
+        adjustServingsButton.addEventListener("click", function () {
+            const desiredServings = parseInt(document.getElementById("desiredServings").value.trim());
+            const feeds = parseInt(document.getElementById("recipeFeeds").value.trim());
+            const ingredients = [];
+
+            document.querySelectorAll(".ingredient-item").forEach(item => {
+                const name = item.querySelector(".ingredient-name").value.trim();
+                const amount = parseFloat(item.querySelector(".ingredient-amount").value.trim());
+                const measurement = item.querySelector(".ingredient-measurement").value.trim();
+
+                if (name && amount && measurement) {
+                    ingredients.push({ name, amount, measurement });
+                }
+            });
+
+            if (!feeds || feeds <= 0 || !desiredServings || desiredServings <= 0) {
+                showNotification("Invalid servings data. Ensure 'feeds' and 'desired servings' are valid numbers.", "error");
+                return;
+            }
+
+            const requestData = {
+                feeds,
+                desired_servings: desiredServings,
+                ingredients
+            };
+
+            // Write the multiplier request to the text file
+            fetch("/api/adjust-servings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const adjustedIngredients = document.getElementById("adjustedIngredients");
+                        adjustedIngredients.innerHTML = "<h4>Adjusted Ingredients:</h4>";
+
+                        const ul = document.createElement("ul");
+                        data.ingredients.forEach(ingredient => {
+                            const li = document.createElement("li");
+                            li.textContent = `${ingredient.amount} ${ingredient.measurement} ${ingredient.name}`;
+                            ul.appendChild(li);
+                        });
+
+                        adjustedIngredients.appendChild(ul);
+                    } else {
+                        showNotification(data.message || "Failed to adjust servings.", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    showNotification("An error occurred while adjusting servings.", "error");
+                });
+        });
+    }
 });
