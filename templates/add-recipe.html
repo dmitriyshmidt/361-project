@@ -19,11 +19,10 @@
             <button class="close" aria-label="Close Help Modal">&times;</button>
             <h2>How to Add a Recipe</h2>
             <p>
-                - Enter the recipe title and a brief description.<br>
+                - Enter the recipe title, a brief description, and the number of servings in the "Feeds" field.<br>
                 - Add ingredients by filling in the name, amount, and measurement, then click the "+" button.<br>
                 - Add instructions by describing each step, then click the "+" button.<br>
                 - Click "Save Recipe" to save your recipe.<br>
-                - Use "Cancel" to discard changes.<br>
                 - Use "Back" to return to the previous page.<br>
                 - Use "Logout" to sign out of your account.
             </p>
@@ -46,6 +45,12 @@
             <div class="recipe-description">
                 <label for="recipeDescription">Description:</label>
                 <textarea id="recipeDescription" name="recipeDescription" placeholder="Enter a brief description"></textarea>
+            </div>
+
+            <!-- Feeds Section -->
+            <div class="recipe-feeds">
+                <label for="recipeFeeds">Feeds:</label>
+                <input type="number" id="recipeFeeds" name="recipeFeeds" placeholder="Enter the number of servings">
             </div>
 
             <!-- Ingredients Section -->
@@ -80,18 +85,15 @@
                 </div>
                 <button type="button" id="addInstructionButton" class="add-button">+</button>
             </div>
-
-            <!-- Submit and Cancel Buttons -->
-            <button id="submitRecipeButton" type="submit">Save Recipe</button>
-            <button id="cancelButton" type="button" class="cancel-button">Cancel</button>
         </form>
     </div>
 
-    <!-- Back Button -->
-    <button id="backButton" class="back-button">Back</button>
-
-    <!-- Logout Button -->
-    <button id="logoutButton" class="logout-button">Logout</button>
+    <!-- Footer Buttons -->
+    <div class="footer-buttons">
+        <button id="submitRecipeButton" type="submit">Save Recipe</button>
+        <button id="backButton" class="back-button">Back</button>
+        <button id="logoutButton" class="logout-button">Logout</button>
+    </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

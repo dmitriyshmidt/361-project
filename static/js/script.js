@@ -313,21 +313,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // View, Edit, and Remove Recipe Actions on the view-recipes page
     const recipeList = document.querySelector('.recipe-list');
     if (recipeList) {
-        // View Recipe Details
         recipeList.addEventListener('click', function(event) {
-            if (event.target.classList.contains('view-button')) {
+            // View/Edit Recipe
+            if (event.target.classList.contains('view-edit-button')) {
                 const recipeId = event.target.getAttribute('data-id');
-                // Implement viewing recipe details
-                // For example, redirect to a recipe detail page
-                window.location.href = `/recipes/${recipeId}`;
-            }
-
-            // Edit Recipe
-            if (event.target.classList.contains('edit-button')) {
-                const recipeId = event.target.getAttribute('data-id');
-                // Implement editing recipe
-                // For example, redirect to the edit-recipe page with the recipe ID
-                window.location.href = `/edit-recipe/${recipeId}`;
+                window.location.href = `/view-edit-recipe/${recipeId}`;
             }
 
             // Remove Recipe

@@ -45,7 +45,6 @@ def write_users(users):
 def index():
     return render_template('index.html')
 
-# Route for user login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -54,16 +53,13 @@ def login():
 
     users = read_users()
 
-    # Authenticate user (plaintext password check)
     for user in users:
         if user['username'] == username and user['password'] == password:
-            # Password is correct
             session['username'] = username
             return jsonify({'success': True, 'message': 'Login successful'})
 
     return jsonify({'success': False, 'message': 'Invalid username or password'}), 401
 
-# Route for user registration (optional)
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -73,11 +69,9 @@ def register():
 
         users = read_users()
 
-        # Check if username already exists
         if any(user['username'] == username for user in users):
             return jsonify({'success': False, 'message': 'Username already exists'}), 400
 
-        # Add new user without password hashing
         users.append({'username': username, 'password': password})
         write_users(users)
 
@@ -106,22 +100,8 @@ def view_recipes():
     user_recipes = [recipe for recipe in recipes if recipe.get('username') == session['username']]
     return render_template('view-recipes.html', recipes=user_recipes)
 
-# Route to view a specific recipe
-@app.route('/recipes/<recipe_id>')
-def view_recipe(recipe_id):
-    if 'username' not in session:
-        return redirect(url_for('index'))
-
-    recipes = read_recipes()
-    recipe = next((r for r in recipes if r['id'] == recipe_id and r['username'] == session['username']), None)
-    if recipe:
-        return render_template('view-recipe.html', recipe=recipe)
-    else:
-        return "Recipe not found or unauthorized", 404
-
-# Route to edit a specific recipe
-@app.route('/edit-recipe/<recipe_id>', methods=['GET', 'POST'])
-def edit_recipe(recipe_id):
+@app.route('/view-edit-recipe/<recipe_id>', methods=['GET', 'POST'])
+def view_edit_recipe(recipe_id):
     if 'username' not in session:
         return redirect(url_for('index'))
 
@@ -140,8 +120,8 @@ def edit_recipe(recipe_id):
 
         write_recipes(recipes)
         return jsonify({'success': True, 'message': 'Recipe updated'})
-    else:
-        return render_template('edit-recipe.html', recipe=recipe)
+
+    return render_template('view-edit-recipe.html', recipe=recipe)
 
 @app.route('/api/recipes', methods=['POST'])
 def save_recipe():
@@ -150,7 +130,7 @@ def save_recipe():
 
     recipe = request.get_json()
     recipe['username'] = session['username']
-    recipe['id'] = str(uuid.uuid4())  # Generate a unique ID for the recipe
+    recipe['id'] = str(uuid.uuid4())
 
     recipes = read_recipes()
     recipes.append(recipe)
@@ -163,7 +143,6 @@ def delete_recipe(recipe_id):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
 
     recipes = read_recipes()
-    # Find the recipe with the given id that belongs to the user
     recipe_to_delete = next((r for r in recipes if r['id'] == recipe_id and r['username'] == session['username']), None)
 
     if recipe_to_delete:

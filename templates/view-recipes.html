@@ -19,6 +19,9 @@
 
         <!-- Recipe List -->
         <div class="recipe-list">
+            {% if recipes|length == 0 %}
+            <p>No recipes found. Add your first recipe to get started!</p>
+            {% else %}
             {% for recipe in recipes %}
             <div class="recipe-item">
                 <div class="recipe-info">
@@ -26,12 +29,14 @@
                     <p>{{ recipe.description }}</p>
                 </div>
                 <div class="recipe-actions">
-                    <button class="view-button" data-id="{{ recipe.id }}">View</button>
-                    <button class="edit-button" data-id="{{ recipe.id }}">Edit</button>
+                    <button class="view-edit-button" data-id="{{ recipe.id }}">View/Edit</button>
+                        View/Edit
+                    </button>
                     <button class="remove-button" data-id="{{ recipe.id }}">Remove</button>
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 
@@ -44,22 +49,20 @@
             <button class="close" aria-label="Close Help Modal">&times;</button>
             <h2>Using the Recipe List</h2>
             <p>
-                - <strong>View:</strong> Opens the full details of the recipe.<br>
-                - <strong>Edit:</strong> Allows you to modify the recipe.<br>
+                - <strong>View/Edit:</strong> Opens the recipe for viewing and editing.<br>
                 - <strong>Remove:</strong> Deletes the recipe from your list.<br>
-                - <strong>Back:</strong> Returns to the previous page.<br>
+                - <strong>Back:</strong> Returns to the main menu.<br>
                 - <strong>Logout:</strong> Sign out of your account.
             </p>
         </div>
     </div>
 
     <!-- Back Button -->
-    <button id="backButton" class="back-button">Back</button>
+    <button id="backButton" class="back-button" onclick="window.location.href='/main-menu';">Back</button>
 
     <!-- Logout Button -->
     <button id="logoutButton" class="logout-button">Logout</button>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
 </body>
 </html>
