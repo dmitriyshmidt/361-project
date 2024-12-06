@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Recipe Book App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <div class="register-container">
+        <!-- Header -->
+        <header>
+            <h1>Create an Account</h1>
+            <p>Sign up to save and manage your favorite recipes!</p>
+        </header>
+
+        <!-- Registration Form -->
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter a unique username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter a strong password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+
+            <div class="footer-buttons">
+                <button id="helpButton" class="footer-button help-button">Help</button>
+                <button type="submit" id="registerButton" class="footer-button save-button">Register</button>
+                <button type="button" id="backButton" class="footer-button back-button">Back</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close Help Modal">&times;</button>
+            <h2>How to Register</h2>
+            <p>
+                - Choose a unique username and password.<br>
+                - Confirm your password to avoid typos.<br>
+                - Click "Register" to create your account.<br>
+                - Use "Back" to return to the previous page without registering.
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

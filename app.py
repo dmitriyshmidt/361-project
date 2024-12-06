@@ -3,6 +3,7 @@ import os
 import json
 import uuid
 from functools import wraps
+import time
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a secure random key in production
@@ -147,6 +148,87 @@ def logout():
 def guest_login():
     session['username'] = "guest"
     return jsonify({'success': True, 'message': 'Logged in as guest', 'redirect_url': url_for('main_menu')})
+
+@app.route('/recommendations')
+def get_recommendations():
+    # Write the request to request.txt
+    request_file = os.path.join(app.root_path, 'microserviceA', 'request.txt')
+    response_file = os.path.join(app.root_path, 'microserviceA', 'response.txt')
+
+    try:
+        with open(request_file, 'w') as file:
+            file.write("Get Top Recipes")
+
+        # Poll for the response
+        timeout = 30  # seconds
+        start_time = time.time()
+
+        while True:
+            if time.time() - start_time > timeout:
+                return jsonify({'success': False, 'message': 'Microservice timed out. No response received.'}), 504
+
+            if os.path.exists(response_file):
+                with open(response_file, 'r') as file:
+                    response = file.read().strip()
+
+                    if response:
+                        # Process the response and return it
+                        recipes = response.split("\n")
+                        return jsonify({'success': True, 'recipes': recipes})
+                    else:
+                        time.sleep(2)  # Wait and retry
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error: {str(e)}'}), 500
+
+@app.route('/register')
+def register():
+    return render_template('register-user.html')
+
+@app.route('/register-user', methods=['POST'])
+def register_user():
+    # Read the JSON payload from the client
+    data = request.get_json()
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+
+    if not username or not password:
+        return jsonify({'success': False, 'message': 'Username and password are required.'}), 400
+
+    try:
+        # Write the registration request to the request file
+        request_file = os.path.join(app.root_path, 'microserviceB', 'user_request.txt')
+        response_file = os.path.join(app.root_path, 'microserviceB', 'user_response.txt')
+
+        with open(request_file, 'w') as file:
+            file.write(f"REGISTER {username} {password}")
+
+        # Poll for the response from MicroserviceB
+        timeout = 10  # seconds
+        start_time = time.time()
+
+        while True:
+            if time.time() - start_time > timeout:
+                return jsonify({'success': False, 'message': 'Registration service timed out.'}), 504
+
+            if os.path.exists(response_file):
+                with open(response_file, 'r') as file:
+                    response = file.read().strip()
+
+                # Clear the response file after reading
+                with open(response_file, 'w') as file:
+                    file.write("")
+
+                if response:
+                    if "SUCCESS" in response:
+                        return jsonify({'success': True, 'message': 'Registration successful.'})
+                    else:
+                        return jsonify({'success': False, 'message': response.replace("ERROR ", "")})
+            time.sleep(1)
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

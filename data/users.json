@@ -1,15 +1,18 @@
 [
-    {
+  {
     "username": "guest",
     "password": ""
-    },
-    {
-      "username": "user1",
-      "password": "password123"
-    },
-    {
-      "username": "user2",
-      "password": "mypassword"
-    }
-  ]
-  
+  },
+  {
+    "username": "user1",
+    "password": "password123"
+  },
+  {
+    "username": "user2",
+    "password": "mypassword"
+  },
+  {
+    "username": "johndoe",
+    "password": "strong"
+  }
+]
