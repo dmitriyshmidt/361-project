@@ -102,5 +102,22 @@
     ],
     "username": "user2",
     "id": "ca382d6d-9826-4a13-80a1-a6c61c29b957"
+  },
+  {
+    "title": "Literally just a glass of milk",
+    "description": "milk",
+    "feeds": "1",
+    "ingredients": [
+      {
+        "name": "Milk",
+        "amount": "1",
+        "measurement": "cups"
+      }
+    ],
+    "instructions": [
+      "milk"
+    ],
+    "username": "guest",
+    "id": "a21b2480-e771-46c9-a211-618b8cf7291b"
   }
 ]

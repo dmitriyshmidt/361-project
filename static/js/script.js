@@ -2,16 +2,19 @@
 
 document.addEventListener("DOMContentLoaded", function() {
     // Utility function to show notifications
-    function showNotification(message, type = 'info') {
+    // Utility function to show notifications
+    function showNotification(message, type = 'info', duration = 5000) { // Default duration: 5 seconds
         const notification = document.getElementById('notification');
         notification.textContent = message;
         notification.className = `notification ${type}`;
         notification.style.display = 'block';
-        // Auto-hide notification after 3 seconds
+
+        // Auto-hide notification after the specified duration
         setTimeout(() => {
             notification.style.display = 'none';
-        }, 3000);
+        }, duration);
     }
+
 
     // Modal functionality
     const helpButtons = document.querySelectorAll(".help-button");
@@ -228,6 +231,110 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error("Error:", error);
                     showNotification("An error occurred while registering. Please try again.", "error");
                 });
+        });
+    }
+    // Handle Add Recipe Form Submission
+    const addRecipeForm = document.getElementById("addRecipeForm");
+    if (addRecipeForm) {
+        addRecipeForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const recipeTitle = document.getElementById("recipeTitle").value.trim();
+            const recipeDescription = document.getElementById("recipeDescription").value.trim();
+            const recipeFeeds = document.getElementById("recipeFeeds").value.trim();
+
+            // Collect ingredients
+            const ingredients = [];
+            document.querySelectorAll(".ingredient-item").forEach(item => {
+                const name = item.querySelector(".ingredient-name").value.trim();
+                const amount = item.querySelector(".ingredient-amount").value.trim();
+                const measurement = item.querySelector(".ingredient-measurement").value;
+                if (name && amount) {
+                    ingredients.push({ name, amount, measurement });
+                }
+            });
+
+            // Collect instructions
+            const instructions = [];
+            document.querySelectorAll(".instruction-step .instruction-text").forEach(step => {
+                const instruction = step.value.trim();
+                if (instruction) {
+                    instructions.push(instruction);
+                }
+            });
+
+            if (!recipeTitle || !ingredients.length || !instructions.length) {
+                showNotification("Please fill out all required fields: title, ingredients, and instructions.", "error");
+                return;
+            }
+
+            const recipeData = {
+                title: recipeTitle,
+                description: recipeDescription,
+                feeds: recipeFeeds,
+                ingredients: ingredients,
+                instructions: instructions
+            };
+
+            fetch("/api/recipes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(recipeData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification("Recipe saved successfully!", "success");
+                        setTimeout(() => {
+                            window.location.href = "/view-recipes"; // Redirect to view recipes
+                        }, 2000);
+                    } else {
+                        showNotification(data.message || "Failed to save the recipe.", "error");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    showNotification("An error occurred while saving the recipe.", "error");
+                });
+        });
+    }
+
+    // Handle View/Edit and Remove Recipe Actions on the View Recipes page
+    const recipeList = document.querySelector('.recipe-list');
+
+    if (recipeList) {
+        recipeList.addEventListener('click', function (event) {
+            // View/Edit Recipe
+            if (event.target.classList.contains('view-edit-button')) {
+                const recipeId = event.target.getAttribute('data-id');
+                window.location.href = `/view-edit-recipe/${recipeId}`;
+            }
+
+            // Remove Recipe
+            if (event.target.classList.contains('remove-button')) {
+                const recipeId = event.target.getAttribute('data-id');
+                if (confirm("Are you sure you want to delete this recipe?")) {
+                    fetch(`/api/recipes/${recipeId}`, {
+                        method: 'DELETE',
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                showNotification("Recipe deleted successfully!", "success");
+                                // Reload the page to refresh the recipe list
+                                window.location.reload();
+                            } else {
+                                showNotification(data.message || "Failed to delete the recipe.", "error");
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                            showNotification("An error occurred while deleting the recipe.", "error");
+                        });
+                }
+            }
         });
     }
 });

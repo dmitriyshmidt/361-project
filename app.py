@@ -113,18 +113,49 @@ def view_edit_recipe(recipe_id):
 @app.route('/api/recipes', methods=['POST'])
 @login_required
 def save_recipe():
+    # Read the JSON payload from the client
     recipe = request.get_json()
 
     if not recipe.get('title'):
         return jsonify({'success': False, 'message': 'Title is required'}), 400
 
+    # Add the username to the recipe
     recipe['username'] = session['username']
-    recipe['id'] = str(uuid.uuid4())
 
-    recipes = read_json(RECIPES_FILE)
-    recipes.append(recipe)
-    write_json(RECIPES_FILE, recipes)
-    return jsonify({'success': True, 'message': 'Recipe saved', 'recipe': recipe})
+    # Write the recipe data to the request file
+    request_file = os.path.join(app.root_path, 'microserviceC', 'recipe_request.txt')
+    response_file = os.path.join(app.root_path, 'microserviceC', 'recipe_response.txt')
+
+    try:
+        with open(request_file, 'w') as file:
+            file.write(f"ADD_RECIPE {json.dumps(recipe)}")
+
+        # Poll for the response from MicroserviceC
+        timeout = 10  # seconds
+        start_time = time.time()
+
+        while True:
+            if time.time() - start_time > timeout:
+                return jsonify({'success': False, 'message': 'Recipe service timed out.'}), 504
+
+            if os.path.exists(response_file):
+                with open(response_file, 'r') as file:
+                    response = file.read().strip()
+
+                # Clear the response file after reading
+                with open(response_file, 'w') as file:
+                    file.write("")
+
+                if response:
+                    if "SUCCESS" in response:
+                        return jsonify({'success': True, 'message': 'Recipe added successfully.'})
+                    else:
+                        return jsonify({'success': False, 'message': response.replace("ERROR ", "")})
+            time.sleep(1)
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'}), 500
+
 
 @app.route('/api/recipes/<recipe_id>', methods=['DELETE'])
 @login_required
